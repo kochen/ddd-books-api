@@ -13,9 +13,9 @@ class BookControllerTest extends WebTestCase
     public function setUp()
     {
         $this->client = $this->makeClient();
-      //  $this->loadFixtures([
-       //     'src\AppBundle\DataFixtures\ORM\Book\BookData',
-        //]);
+        $this->loadFixtures([
+            'src\AppBundle\DataFixtures\ORM\Book\BookData',
+        ]);
     }
 
     public function testBooks()
@@ -29,7 +29,7 @@ class BookControllerTest extends WebTestCase
         $decoded = json_decode($content, true);
         $this->assertTrue(is_array($decoded));
 
-    //    $this->assertTrue(sizeof($decoded['data']) > 0);
+        $this->assertTrue(sizeof($decoded['data']) > 0);
         foreach($decoded['data'] as $row) {
             $this->assertInternalType('string', $row['id']);
             $this->assertInternalType('string', $row['title']);
