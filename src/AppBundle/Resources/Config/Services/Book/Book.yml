@@ -1,0 +1,6 @@
+parameters:
+  my_company.book.entity.class: MyCompany\Book\DomainModel\BookEntity
+services:
+  my_company.book.repository:
+    class: MyCompany\Book\Infrastructure\Persistance\Doctrine\BookRepository
+    arguments: ['@doctrine.orm.entity_manager', '%my_company.book.entity.class%']

@@ -1,9 +1,8 @@
 <?php
 
-namespace Tests\AppBundle\Controller;
+namespace tests\Integration\AppBundle\Controller;
 
 use Liip\FunctionalTestBundle\Test\WebTestCase;
-
 use Symfony\Bundle\FrameworkBundle\Client;
 
 class BookControllerTest extends WebTestCase
@@ -13,10 +12,13 @@ class BookControllerTest extends WebTestCase
 
     public function setUp()
     {
-        $this->client = static::createClient();
+        $this->client = $this->makeClient();
+      //  $this->loadFixtures([
+       //     'src\AppBundle\DataFixtures\ORM\Book\BookData',
+        //]);
     }
 
-    public function testPages()
+    public function testBooks()
     {
         $route =  $this->getUrl('api_1_get_books');
         $this->client->request('GET', $route, array('ACCEPT' => 'application/json'));
@@ -26,5 +28,12 @@ class BookControllerTest extends WebTestCase
         $content = $response->getContent();
         $decoded = json_decode($content, true);
         $this->assertTrue(is_array($decoded));
+
+    //    $this->assertTrue(sizeof($decoded['data']) > 0);
+        foreach($decoded['data'] as $row) {
+            $this->assertInternalType('string', $row['id']);
+            $this->assertInternalType('string', $row['title']);
+            $this->assertInternalType('string', $row['created_at']);
+        }
     }
 }
