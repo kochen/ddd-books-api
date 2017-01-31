@@ -1,6 +1,6 @@
 <?php
 
-namespace tests\Unit\Gindumac\Product\DomainModel;
+namespace tests\Unit\MyCompany\Book\DomainModel;
 
 use MyCompany\Book\DomainModel\BookEntity;
 

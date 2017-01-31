@@ -14,7 +14,7 @@ class BookControllerTest extends WebTestCase
     {
         $this->client = $this->makeClient();
         $this->loadFixtures([
-            'src\AppBundle\DataFixtures\ORM\Book\BookData',
+            'AppBundle\DataFixtures\ORM\Book\BookData',
         ]);
     }
 

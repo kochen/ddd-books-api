@@ -1,6 +1,6 @@
 <?php
 
-namespace src\AppBundle\DataFixtures\ORM\Book;
+namespace AppBundle\DataFixtures\ORM\Book;
 
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\Common\DataFixtures\AbstractFixture;
