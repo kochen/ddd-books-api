@@ -5,6 +5,7 @@ namespace MyCompany\Book\Infrastructure\Persistance\Doctrine;
 use MyCompany\Book\DomainModel\BookRepository as BookRepositoryInterface;
 use MyCompany\Book\DomainModel\BookEntity;
 use Doctrine\ORM\EntityManager;
+use MyCompany\Book\DomainModel\BookNotFoundException;
 
 class BookRepository implements BookRepositoryInterface
 {
@@ -27,7 +28,11 @@ class BookRepository implements BookRepositoryInterface
 
     public function getById(string $id)
     {
-        return $this->repository->find($id);
+        $bookEntity = $this->repository->find($id);
+        if (!$bookEntity instanceof BookEntity) {
+            throw new BookNotFoundException('Book Not Found');
+        }
+        return $bookEntity;
     }
 
     public function getAll(int $limit = 25, int $offset = 0)

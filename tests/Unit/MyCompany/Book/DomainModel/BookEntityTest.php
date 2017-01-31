@@ -1,8 +1,9 @@
 <?php
 
-namespace tests\Unit\Gindumac\Product\DomainModel;
+namespace tests\Unit\MyCompany\Book\DomainModel;
 
 use MyCompany\Book\DomainModel\BookEntity;
+use MyCompany\Identity\Infrastructure\UUID;
 
 class BookEntityTest extends \PHPUnit_Framework_TestCase
 {
@@ -34,7 +35,8 @@ class BookEntityTest extends \PHPUnit_Framework_TestCase
     public function testCreate()
     {
         $bookTitle = 'Test Title';
-        $book = BookEntity::create($bookTitle);
+        $id = UUID::create();
+        $book = BookEntity::create($id, $bookTitle);
         $this->assertSame(BookEntity::class, get_class($book));
         // Id
         $this->assertNotEmpty($book->id());

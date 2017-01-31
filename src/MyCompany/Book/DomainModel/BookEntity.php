@@ -2,7 +2,7 @@
 
 namespace MyCompany\Book\DomainModel;
 
-use Ramsey\Uuid\Uuid;
+use MyCompany\Identity\DomainModel\EntityID;
 
 class BookEntity
 {
@@ -14,10 +14,11 @@ class BookEntity
     private $createdAt;
 
     public static function create(
+        EntityID $id,
         string $title
     ) {
         $self = new self();
-        $self->id = Uuid::uuid4()->toString();
+        $self->id = $id->id();
         $self->title = $title;
         $self->createdAt = new \Datetime("now");
         return $self;
