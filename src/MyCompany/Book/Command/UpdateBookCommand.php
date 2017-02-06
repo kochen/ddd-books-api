@@ -2,31 +2,33 @@
 
 namespace MyCompany\Book\Command;
 
-use MyCompany\Identity\DomainModel\EntityID;
+use MyCompany\Book\DomainModel\BookEntity;
 
-class CreateBookCommand
+class UpdateBookCommand
 {
-    /** @var EntityID */
-    private $id;
+    /** @var BookEntity */
+    private $book;
     /** @var string */
     private $title;
+    /** @var string */
+    private $author;
 
     public function __construct(
-        EntityID $id,
+        BookEntity $book,
         string $title = null,
         string $author = null
     ) {
-        $this->id = $id;
+        $this->book = $book;
         $this->title = $title;
         $this->author = $author;
     }
 
     /**
-     * @return EntityID
+     * @return BookEntity
      */
-    public function id() : EntityID
+    public function book() : BookEntity
     {
-        return $this->id;
+        return $this->book;
     }
 
     /**

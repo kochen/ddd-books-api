@@ -5,7 +5,7 @@ namespace MyCompany\Book\Command;
 use MyCompany\Book\DomainModel\BookEntity;
 use MyCompany\Book\DomainModel\BookRepository;
 
-class CreateBookCommandHandler
+class UpdateBookCommandHandler
 {
     /** @var BookRepository */
     private $bookRepository;
@@ -16,16 +16,15 @@ class CreateBookCommandHandler
         $this->bookRepository = $bookRepository;
     }
     /**
-     * @param CreateBookCommand $command
+     * @param UpdateBookCommand $command
      */
-    public function handle(CreateBookCommand $command)
+    public function handle(UpdateBookCommand $command)
     {
-        $bookEntity = BookEntity::create(
-            $command->id(),
+        $bookEntity = $command->book();
+        $bookEntity->update(
             $command->title(),
             $command->author()
         );
-
         $this->bookRepository->save($bookEntity);
     }
 }

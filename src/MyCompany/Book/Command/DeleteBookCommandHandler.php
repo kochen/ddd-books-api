@@ -5,7 +5,7 @@ namespace MyCompany\Book\Command;
 use MyCompany\Book\DomainModel\BookEntity;
 use MyCompany\Book\DomainModel\BookRepository;
 
-class CreateBookCommandHandler
+class DeleteBookCommandHandler
 {
     /** @var BookRepository */
     private $bookRepository;
@@ -16,16 +16,10 @@ class CreateBookCommandHandler
         $this->bookRepository = $bookRepository;
     }
     /**
-     * @param CreateBookCommand $command
+     * @param DeleteBookCommand $command
      */
-    public function handle(CreateBookCommand $command)
+    public function handle(DeleteBookCommand $command)
     {
-        $bookEntity = BookEntity::create(
-            $command->id(),
-            $command->title(),
-            $command->author()
-        );
-
-        $this->bookRepository->save($bookEntity);
+        $this->bookRepository->delete($command->book());
     }
 }

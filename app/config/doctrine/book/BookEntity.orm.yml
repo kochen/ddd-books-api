@@ -10,7 +10,11 @@ MyCompany\Book\DomainModel\BookEntity:
     title:
       type: string
       length: 255
-      nullable: false
+      nullable: true
+    author:
+      type: string
+      length: 255
+      nullable: true
     createdAt:
       type: datetime
       column: created_at

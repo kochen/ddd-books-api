@@ -12,16 +12,20 @@ use MyCompany\Book\DomainModel\BookEntity;
 
 class BookData extends AbstractFixture implements OrderedFixtureInterface
 {
-  public function load(ObjectManager $manager)
-  {
-      $book = BookEntity::create(UUID::create(), 'Test book 1');
-      $manager->persist($book);
+    static public $books = [];
+    public function load(ObjectManager $manager)
+    {
+    $bookOne = BookEntity::create(UUID::create(), 'Test book 1', 'Test author 1');
+    $manager->persist($bookOne);
 
-      $book = BookEntity::create(UUID::create(), 'Test book 2');
-      $manager->persist($book);
+    $bookTwo = BookEntity::create(UUID::create(), 'Test book 2', 'Test author 2');
+    $manager->persist($bookTwo);
 
-      $manager->flush();
-  }
+    $manager->flush();
+    self::$books[] = $bookOne;
+    self::$books[] = $bookTwo;
+
+    }
 
     public function getOrder()
     {

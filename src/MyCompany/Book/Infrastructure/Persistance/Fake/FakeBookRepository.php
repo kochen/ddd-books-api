@@ -12,6 +12,11 @@ class FakeBookRepository implements BookRepository
         return null;
     }
 
+    public function delete(BookEntity $bookEntity)
+    {
+        return null;
+    }
+
     public function getById(string $id)
     {
         return new BookEntity();

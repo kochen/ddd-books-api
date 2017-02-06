@@ -26,6 +26,12 @@ class BookRepository implements BookRepositoryInterface
         $this->em->flush();
     }
 
+    public function delete(BookEntity $bookEntity)
+    {
+        $this->em->remove($bookEntity);
+        $this->em->flush();
+    }
+
     public function getById(string $id)
     {
         $bookEntity = $this->repository->find($id);

@@ -10,9 +10,16 @@ use FOS\RestBundle\Controller\Annotations;
 
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 
-use MyCompany\Book\DomainModel\BookEntity;
+use MyCompany\Identity\Infrastructure\UUID;
 use MyCompany\Book\DomainModel\BookNotFoundException;
-use MyCompanyBundle\Book\DomainModel\BookRepository;
+use MyCompany\Book\DomainModel\BookRepository;
+
+use AppBundle\Form\Book\UpdateBookForm;
+use AppBundle\Form\Book\CreateBookForm;
+
+use MyCompany\Book\Command\CreateBookCommand;
+use MyCompany\Book\Command\UpdateBookCommand;
+use MyCompany\Book\Command\DeleteBookCommand;
 
 use AppBundle\Response\ApiResponse;
 
@@ -62,7 +69,7 @@ class BookController extends FOSRestController
      *   }
      * )
      *
-     * @param int     $id      the page id
+     * @param int     $id      the book id
      *
      * @return array
      *
@@ -101,11 +108,27 @@ class BookController extends FOSRestController
      */
     public function postBookAction(Request $request)
     {
-//
+        $form = $this->createForm(CreateBookForm::class);
+        $form->submit($request->request->all());
+        if ($form->isValid()) {
+
+            $data = $form->getData();
+            $id = UUID::create();
+            $createBookCommand = new CreateBookCommand(
+                $id,
+                $data['title']
+            );
+            $this->get('command_bus')->handle($createBookCommand);
+            $response = new ApiResponse(true, ['id' => $id->id()]);
+
+        } else {
+            $response = new ApiResponse(false, null, $form->getErrors(true, false));
+        }
+        return $response->getFormattedResponse();
     }
 
     /**
-     * Update existing page from the submitted data or create a new page at a specific location.
+     * Update existing book from the submitted data
      *
      * @ApiDoc(
      *   resource = true,
@@ -117,15 +140,74 @@ class BookController extends FOSRestController
      * )xw
      *
      * @param Request $request the request object
-     * @param int     $id      the page id
+     * @param int     $id      the book id
      *
      * @return array
      *
      */
     public function putBookAction(Request $request, $id)
     {
+        try {
+            /** @var BookRepository $bookRepository */
+            $bookRepository = $this->container->get('my_company.book.repository');
+            $bookEntity = $bookRepository->getById($id);
+        } catch (BookNotFoundException $e) {
+            $response = new ApiResponse(false, null, $e->getMessage());
+            return $response->getFormattedResponse();
+        }
 
+        $form = $this->createForm(UpdateBookForm::class);
+        $form->submit($request->request->all());
+        if ($form->isValid()) {
+
+            $data = $form->getData();
+            $createBookCommand = new UpdateBookCommand(
+                $bookEntity,
+                $data['title'],
+                $data['author']
+            );
+            $this->get('command_bus')->handle($createBookCommand);
+            $response = new ApiResponse(true, []);
+
+        } else {
+            $response = new ApiResponse(false, null, $form->getErrors(true, false));
+        }
+        return $response->getFormattedResponse();
     }
 
-
+    /**
+     * Delete existing book
+     *
+     * @ApiDoc(
+     *   resource = true,
+     *   input = "MyCompany\Book\DomainModel\BookEntity",
+     *   statusCodes = {
+     *     200 = "Returned when successful",
+     *     400 = "Returned when the book is not found"
+     *   }
+     * )xw
+     *
+     * @param Request $request the request object
+     * @param int     $id      the book id
+     *
+     * @return array
+     *
+     */
+    public function deleteBookAction(Request $request, $id)
+    {
+        try {
+            /** @var BookRepository $bookRepository */
+            $bookRepository = $this->container->get('my_company.book.repository');
+            $bookEntity = $bookRepository->getById($id);
+        } catch (BookNotFoundException $e) {
+            $response = new ApiResponse(false, null, $e->getMessage());
+            return $response->getFormattedResponse();
+        }
+        $deleteBookCommand = new DeleteBookCommand(
+            $bookEntity
+        );
+        $this->get('command_bus')->handle($deleteBookCommand);
+        $response = new ApiResponse(true, []);
+        return $response->getFormattedResponse();
+    }
 }
