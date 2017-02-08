@@ -5,9 +5,9 @@ namespace tests\Unit\MyCompany\Book\Command;
 use MyCompany\Book\Command\CreateBookCommand;
 use MyCompany\Book\Command\CreateBookCommandHandler;
 use MyCompany\Book\Infrastructure\Persistance\Fake\FakeBookRepository;
-
 use MyCompany\Identity\Infrastructure\UUID;
 
+use SimpleBus\Message\Bus\MessageBus;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class CreateBookCommandHandlerTest extends WebTestCase
@@ -19,7 +19,8 @@ class CreateBookCommandHandlerTest extends WebTestCase
     {
         $bookRepository = new FakeBookRepository();
         $this->commandHandler = new CreateBookCommandHandler(
-            $bookRepository
+            $bookRepository,
+            new FakeMessageBus()
         );
     }
 
@@ -32,5 +33,12 @@ class CreateBookCommandHandlerTest extends WebTestCase
         ));
         // if exception is thrown never reaches the assert null.
         static::assertNull(null);
+    }
+}
+class FakeMessageBus implements MessageBus
+{
+    public function handle($message)
+    {
+        return null;
     }
 }

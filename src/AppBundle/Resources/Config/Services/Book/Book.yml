@@ -13,7 +13,7 @@ services:
 
   my_company.create_book.command_handler:
         class: MyCompany\Book\Command\CreateBookCommandHandler
-        arguments: ['@my_company.book.repository']
+        arguments: ['@my_company.book.repository', '@event_bus']
         tags:
             - { name: command_handler, handles: MyCompany\Book\Command\CreateBookCommand }
 
@@ -22,3 +22,13 @@ services:
         arguments: ['@my_company.book.repository']
         tags:
             - { name: command_handler, handles: MyCompany\Book\Command\DeleteBookCommand }
+
+  my_company.create_book.email.sparkpost.adapter:
+    arguments: []
+    class: MyCompany\Book\Infrastructure\Communications\SparkPost\SparkPostBookCreatedEmail
+
+  my_company.create_book.email.listener:
+    class: MyCompany\Book\DomainModel\BookCreatedEmailListener
+    arguments: ['@my_company.create_book.email.sparkpost.adapter']
+    tags:
+        - { name: event_subscriber, subscribes_to: MyCompany\Book\DomainModel\BookCreatedEmailEvent }
